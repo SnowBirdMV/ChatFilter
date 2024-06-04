@@ -1,0 +1,8 @@
+{
+  "options.chatfilter.enablemod": "Toggle Mod",
+  "options.chatfilter.textbox": "Name",
+  "options.chatfilter.namebox": "Name",
+  "options.chatfilter.filtervaluebox": "Filter",
+  "options.chatfilter.isregexcheckbox": "Regex?",
+  "options.chatfilter.isoverlaycheckbox": "Send to Overlay?"
+}
