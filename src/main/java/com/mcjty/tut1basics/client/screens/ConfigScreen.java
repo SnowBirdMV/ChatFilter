@@ -1,11 +1,12 @@
-package com.mcjty.tut1basics;
+package com.mcjty.tut1basics.client.screens;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.mcjty.tut1basics.client.data.ChatFilterOptions;
+import com.mcjty.tut1basics.client.handlers.ChatHandler;
+import com.mcjty.tut1basics.Tutorial1Basics;
 import com.mcjty.tut1basics.client.data.Config;
 import com.mcjty.tut1basics.client.data.FilterRule;
 import com.mcjty.tut1basics.client.gui.MultiLineEditBox;
@@ -132,7 +133,6 @@ public class ConfigScreen extends Screen {
     private void onFilterListItemSelected(ScrollingList.Entry entry) {
         // Handle the selection event here
         selectedRule = (FilterRule) entry.getValue();
-        System.out.println("Item selected: " + entry.getText().getString());
         this.nameBox.setValue(selectedRule.getName());
         this.filterValueBox.setValue(selectedRule.getFilterText());
         if (this.isRegexCheckbox.selected() != selectedRule.isRegex()) {
@@ -145,7 +145,6 @@ public class ConfigScreen extends Screen {
 
     private void onMessageLogItemSelected(ScrollingList.Entry entry) {
         Component message = (Component) entry.getValue();
-        System.out.println("Message selected: " + entry.getText().getString());
 
         // Copy the raw message string to the clipboard, removing color codes
         String rawMessage = message.getString().replaceAll("§[0-9A-FK-ORa-fk-or]", "");
@@ -158,7 +157,6 @@ public class ConfigScreen extends Screen {
             selectedRule.setFilterText(this.filterValueBox.getValue());
             selectedRule.setRegex(this.isRegexCheckbox.selected());
             selectedRule.setOverlay(this.isOverlayCheckbox.selected());
-            System.out.println("Values saved for: " + selectedRule.getName());
             refreshFilterList();
             config.writeConfig(Tutorial1Basics.config.getFilterRules());
         }
@@ -256,11 +254,5 @@ public class ConfigScreen extends Screen {
     @Override
     public void onClose() {
         this.minecraft.setScreen(null);
-    }
-
-    private Button openScreenButton(Component p_261565_, Supplier<Screen> p_262119_) {
-        return Button.builder(p_261565_, (p_280808_) -> {
-            this.minecraft.setScreen((Screen) p_262119_.get());
-        }).build();
     }
 }

@@ -1,4 +1,4 @@
-package com.mcjty.tut1basics;
+package com.mcjty.tut1basics.client.data;
 
 import net.minecraft.client.OptionInstance;
 

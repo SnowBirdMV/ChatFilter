@@ -1,6 +1,7 @@
-package com.mcjty.tut1basics;
+package com.mcjty.tut1basics.client.handlers;
 
 import com.google.gson.GsonBuilder;
+import com.mcjty.tut1basics.Tutorial1Basics;
 import com.mcjty.tut1basics.client.data.FilterRule;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
@@ -8,7 +9,6 @@ import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import com.google.gson.Gson;
 import java.util.*;
@@ -20,8 +20,6 @@ import org.slf4j.Logger;
 public class ChatHandler {
     private final static Logger LOGGER = LogUtils.getLogger();
 
-    public static Map<String, String> adMap = null;
-    public static Map<String, String> overlayMap = null;
     private static List<FilterRule> filterRules;
     private static final int MAX_MESSAGES = 100;
     private static final List<Component> messageLog = Collections.synchronizedList(new LinkedList<>());
@@ -92,7 +90,6 @@ public class ChatHandler {
     }
 
     private static Boolean runFilterLists(ClientChatReceivedEvent e) {
-        Boolean foundMatch = false;
         FilterRule matchingRule = null;
         String eventMessage = e.getMessage().getString();
         for(FilterRule rule : filterRules){
@@ -364,16 +361,5 @@ public class ChatHandler {
             this.rankTag = rankTag;
         }
 
-    }
-
-    public class TitleHandler{
-        @SubscribeEvent
-        public static void handleOverlay(RenderGuiOverlayEvent e){
-//            if(e.getOverlay().id().toString().equals("minecraft:title_text")){
-//                System.out.println(e);
-//                System.out.println(e.getOverlay().id());
-//            }
-
-        }
     }
 }
