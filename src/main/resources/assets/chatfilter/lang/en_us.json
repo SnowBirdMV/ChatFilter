@@ -4,5 +4,10 @@
   "options.chatfilter.namebox": "Name",
   "options.chatfilter.filtervaluebox": "Filter",
   "options.chatfilter.isregexcheckbox": "Regex?",
-  "options.chatfilter.isoverlaycheckbox": "Send to Overlay?"
+  "options.chatfilter.isoverlaycheckbox": "Send to Overlay?",
+  "options.chatfilter.save": "Save Filter",
+  "options.chatfilter.newfilter": "New Filter",
+  "options.chatfilter.deletefilter": "Delete Filter",
+  "options.chatfilter.delete": "Delete Filter",
+  "§coptions.chatfilter.delete": "Delete Filter"
 }

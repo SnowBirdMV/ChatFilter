@@ -23,6 +23,11 @@ public class ChatHandler {
     public static Map<String, String> adMap = null;
     public static Map<String, String> overlayMap = null;
     private static List<FilterRule> filterRules;
+    private static final int MAX_MESSAGES = 100;
+    private static final List<Component> messageLog = Collections.synchronizedList(new LinkedList<>());
+    public static List<Component> getMessageLog() {
+        return new ArrayList<>(messageLog); // return a copy to avoid concurrent modification issues
+    }
 
     public ChatHandler() {
 
@@ -31,12 +36,23 @@ public class ChatHandler {
     @SubscribeEvent
     public static void clientChatReceived(ClientChatReceivedEvent e) {
         try {
+            logMessage(e.getMessage());
             handleChat(e);
         }
         catch (Exception ex){
             LOGGER.info("GOT AN ERROR:");
             LOGGER.info(ex.getMessage());
         }
+    }
+
+    private static void logMessage(Component message) {
+        synchronized (messageLog) {
+            if (messageLog.size() >= MAX_MESSAGES) {
+                messageLog.remove(0);
+            }
+            messageLog.add(message);
+        }
+        LOGGER.info("Logged message component: " + message.getString());
     }
 
     private static void handleChat(ClientChatReceivedEvent e) {

@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -26,18 +27,32 @@ public class ScrollingList extends ObjectSelectionList<ScrollingList.Entry> {
     }
 
     @Override
-    protected int getScrollbarPosition() {
-        return this.width - 6;
-    }
-
-    @Override
-    public int getRowWidth() {
-        return this.width - 12;
-    }
-
-    @Override
     protected boolean isSelectedItem(int index) {
         return this.getSelected() == this.getEntry(index);
+    }
+
+    @Override
+    protected int getScrollbarPosition() {
+        return this.getLeft() + this.getWidth() - 6; // Adjust the scrollbar position
+    }
+
+    @Override
+    public void render(GuiGraphics pGuiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(pGuiGraphics, mouseX, mouseY, partialTicks);
+        drawBorder(pGuiGraphics);
+    }
+
+    private void drawBorder(GuiGraphics pGuiGraphics) {
+        int left = this.getLeft();
+        int right = this.getLeft() + this.getWidth();
+        int top = this.getTop();
+        int bottom = this.getBottom();
+
+        // Draw the border
+        pGuiGraphics.fill(left - 1, top - 1, right + 1, top, 0xFFFFFFFF); // Top border
+        pGuiGraphics.fill(left - 1, bottom, right + 1, bottom + 1, 0xFFFFFFFF); // Bottom border
+        pGuiGraphics.fill(left - 1, top, left, bottom, 0xFFFFFFFF); // Left border
+        pGuiGraphics.fill(right, top, right + 1, bottom, 0xFFFFFFFF); // Right border
     }
 
     public void setSelected(Entry entry) {
@@ -64,9 +79,25 @@ public class ScrollingList extends ObjectSelectionList<ScrollingList.Entry> {
 
         @Override
         public void render(GuiGraphics pGuiGraphics, int pIndex, int pTop, int pLeft, int pWidth, int pHeight, int pMouseX, int pMouseY, boolean pHovering, float pPartialTick) {
-            pGuiGraphics.drawString(Minecraft.getInstance().font, this.text, pLeft + 2, pTop + 2, 0xFFFFFF);
+            PoseStack poseStack = pGuiGraphics.pose();
+            int left = this.parent.getLeft();
+            float scale = 0.8f; // Set the desired scale (smaller font size)
+
+            poseStack.pushPose();
+            poseStack.translate(left + 2, pTop + 2, 0);
+            poseStack.scale(scale, scale, 1.0f);
+
+            // Adjust coordinates after scaling
+            int adjustedX = (int) ((pMouseX - left - 2) / scale);
+            int adjustedY = (int) ((pMouseY - pTop - 2) / scale);
+            int color = 0xFFFFFF;
+
+            pGuiGraphics.drawString(Minecraft.getInstance().font, this.text, 0, 0, color);
+
+            poseStack.popPose();
+
             if (pHovering) {
-                pGuiGraphics.fill(pLeft, pTop, pLeft + pWidth, pTop + pHeight, 0x80FFFFFF);
+                pGuiGraphics.fill(left, pTop, left + pWidth, pTop + pHeight, 0x80FFFFFF);
             }
         }
 

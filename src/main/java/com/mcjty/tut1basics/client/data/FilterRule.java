@@ -6,6 +6,13 @@ public class FilterRule {
     private boolean isOverlay;
     private String filterText;
 
+    public FilterRule(String name, String filterText, boolean isRegex, boolean isOverlay) {
+        this.name = name;
+        this.isRegex = isRegex;
+        this.isOverlay = isOverlay;
+        this.filterText = filterText;
+    }
+
     public String getName() {
         return name;
     }
