@@ -1,8 +1,8 @@
-package com.mcjty.tut1basics.client.handlers;
+package com.snowbird.chatfilter.client.handlers;
 
 import com.google.gson.GsonBuilder;
-import com.mcjty.tut1basics.Tutorial1Basics;
-import com.mcjty.tut1basics.client.data.FilterRule;
+import com.snowbird.chatfilter.ChatFilter;
+import com.snowbird.chatfilter.client.data.FilterRule;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.*;
@@ -54,10 +54,10 @@ public class ChatHandler {
     }
 
     private static void handleChat(ClientChatReceivedEvent e) {
-        if (!Tutorial1Basics.config.isModEnabled()){
+        if (!ChatFilter.config.isModEnabled()){
             return;
         }
-        filterRules = Tutorial1Basics.config.getFilterRules();
+        filterRules = ChatFilter.config.getFilterRules();
         LOGGER.info("Chat Received!");
         LOGGER.info("Message was: " + e.getMessage().getString().replace("\n", "\\n"));
         LOGGER.info("Unicode Message: " + escapeNonAscii(e.getMessage().getString()));
@@ -281,6 +281,12 @@ public class ChatHandler {
                         Arrays.asList(
                                 MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
                                 MutableComponent.create(new LiteralContents("I")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("11D0DC", 16)))),
+                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
+                        )));
+                put("Grass", new RankReplacement("Grass",
+                        Arrays.asList(
+                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
+                                MutableComponent.create(new LiteralContents("G")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("7AC74C", 16)))),
                                 MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
                         )));
             }

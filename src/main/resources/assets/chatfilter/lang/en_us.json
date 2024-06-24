@@ -9,5 +9,7 @@
   "options.chatfilter.newfilter": "New Filter",
   "options.chatfilter.deletefilter": "Delete Filter",
   "options.chatfilter.delete": "Delete Filter",
-  "§coptions.chatfilter.delete": "Delete Filter"
+  "§coptions.chatfilter.delete": "Delete Filter",
+  "key.chatfilter.showconfig": "Show Config",
+  "key.chatfilter.categories.chatfilter": "Chat Filter"
 }

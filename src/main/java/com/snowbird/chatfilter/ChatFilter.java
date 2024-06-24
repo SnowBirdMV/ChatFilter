@@ -1,7 +1,7 @@
-package com.mcjty.tut1basics;
+package com.snowbird.chatfilter;
 
-import com.mcjty.tut1basics.client.data.Config;
-import com.mcjty.tut1basics.client.handlers.ChatHandler;
+import com.snowbird.chatfilter.client.data.Config;
+import com.snowbird.chatfilter.client.handlers.ChatHandler;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -20,10 +20,10 @@ import org.slf4j.Logger;
 
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(Tutorial1Basics.MODID)
-public class Tutorial1Basics {
+@Mod(ChatFilter.MODID)
+public class ChatFilter {
     // Define mod id in a common place for everything to reference
-    public static final String MODID = "tut1basics";
+    public static final String MODID = "chatfilter";
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
 
@@ -40,11 +40,11 @@ public class Tutorial1Basics {
 //            "key.categories.examplemod.examplecategory" // Mapping will be in the new example category
 //    );
 
-    public static final KeyMapping SHOW_CONFIG_MAPPING = new KeyMapping("key.com.thomas7520.macrokeybinds.openoptions.desc" , GLFW.GLFW_KEY_K, "key.categories.com.thomas7520.macrokeybinds");
+    public static final KeyMapping SHOW_CONFIG_MAPPING = new KeyMapping("key.chatfilter.showconfig" , GLFW.GLFW_KEY_K, "key.chatfilter.categories.chatfilter");
 
 
 
-    public Tutorial1Basics() {
+    public ChatFilter() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         // Register the commonSetup method for modloading

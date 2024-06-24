@@ -1,16 +1,15 @@
-package com.mcjty.tut1basics.client.screens;
+package com.snowbird.chatfilter.client.screens;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
-import com.mcjty.tut1basics.client.data.ChatFilterOptions;
-import com.mcjty.tut1basics.client.handlers.ChatHandler;
-import com.mcjty.tut1basics.Tutorial1Basics;
-import com.mcjty.tut1basics.client.data.Config;
-import com.mcjty.tut1basics.client.data.FilterRule;
-import com.mcjty.tut1basics.client.gui.MultiLineEditBox;
-import com.mcjty.tut1basics.client.gui.ScrollingList;
+import com.snowbird.chatfilter.client.data.ChatFilterOptions;
+import com.snowbird.chatfilter.client.handlers.ChatHandler;
+import com.snowbird.chatfilter.ChatFilter;
+import com.snowbird.chatfilter.client.data.Config;
+import com.snowbird.chatfilter.client.data.FilterRule;
+import com.snowbird.chatfilter.client.gui.MultiLineEditBox;
+import com.snowbird.chatfilter.client.gui.ScrollingList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -36,7 +35,7 @@ public class ConfigScreen extends Screen {
     private final Config config;
 
     private String getToggleButtonText() {
-        return Tutorial1Basics.config.isModEnabled() ? "§a✓ Mod Enabled" : "§c✗ Mod Disabled";
+        return ChatFilter.config.isModEnabled() ? "§a✓ Mod Enabled" : "§c✗ Mod Disabled";
     }
 
     private void updateToggleButtonText(Button button) {
@@ -56,7 +55,7 @@ public class ConfigScreen extends Screen {
         // Add the toggle mod button
         Button toggleModButton = Button.builder(Component.translatable(getToggleButtonText()), button -> {
             // Action to perform when button is pressed
-            Tutorial1Basics.config.setModEnabled(!Tutorial1Basics.config.isModEnabled());
+            ChatFilter.config.setModEnabled(!ChatFilter.config.isModEnabled());
             updateToggleButtonText(button);
         }).pos(this.width / 100, this.height / 50).size(this.width / 5, this.height / 13).build();
         this.addRenderableWidget(toggleModButton);
@@ -72,8 +71,8 @@ public class ConfigScreen extends Screen {
 
         // Add a scrolling list for the message log
         Map<Component, Object> messageLogMap = new LinkedHashMap<>();
-        for (Component message : ChatHandler.getMessageLog()) {
-            messageLogMap.put(message, message);
+        for (int i = ChatHandler.getMessageLog().size() - 1; i >= 0; i--) {
+            messageLogMap.put(ChatHandler.getMessageLog().get(i), ChatHandler.getMessageLog().get(i));
         }
         this.messageLogList = new ScrollingList(this, this.width / 5, this.height, this.height / 9, bottomRowCutoff, 12, messageLogMap, this::onMessageLogItemSelected);
         this.messageLogList.setLeftPos(this.width - (this.width / 100) - (this.width / 5));
@@ -117,7 +116,7 @@ public class ConfigScreen extends Screen {
 
     private void initFilterList(int bottomRowCutoff) {
         Map<Component, Object> filterMap = new LinkedHashMap<>();
-        for (FilterRule rule : Tutorial1Basics.config.getFilterRules()) {
+        for (FilterRule rule : ChatFilter.config.getFilterRules()) {
             filterMap.put(Component.translatable(rule.getName()), rule);
         }
         this.scrollingList = new ScrollingList(this, this.width / 5, this.height, this.height / 9, bottomRowCutoff, 12, filterMap, this::onFilterListItemSelected);
@@ -158,7 +157,7 @@ public class ConfigScreen extends Screen {
             selectedRule.setRegex(this.isRegexCheckbox.selected());
             selectedRule.setOverlay(this.isOverlayCheckbox.selected());
             refreshFilterList();
-            config.writeConfig(Tutorial1Basics.config.getFilterRules());
+            config.writeConfig(ChatFilter.config.getFilterRules());
         }
     }
 
@@ -166,16 +165,16 @@ public class ConfigScreen extends Screen {
         String baseName = "New Filter";
         String[] newName = { baseName };
         int counter = 1;
-        while (Tutorial1Basics.config.getFilterRules().stream().anyMatch(rule -> rule.getName().equals(newName[0]))) {
+        while (ChatFilter.config.getFilterRules().stream().anyMatch(rule -> rule.getName().equals(newName[0]))) {
             newName[0] = baseName + " " + counter;
             counter++;
         }
         FilterRule newRule = new FilterRule(newName[0], "", false, false);
-        Tutorial1Basics.config.getFilterRules().add(newRule);
+        ChatFilter.config.getFilterRules().add(newRule);
         blankInputFields();
         refreshFilterListToBottom();
         selectFilter(newRule);
-        config.writeConfig(Tutorial1Basics.config.getFilterRules());
+        config.writeConfig(ChatFilter.config.getFilterRules());
     }
 
     private void blankInputFields() {
@@ -191,10 +190,10 @@ public class ConfigScreen extends Screen {
 
     private void deleteSelectedFilter() {
         if (selectedRule != null) {
-            Tutorial1Basics.config.getFilterRules().remove(selectedRule);
+            ChatFilter.config.getFilterRules().remove(selectedRule);
             selectedRule = null;
             refreshFilterList();
-            config.writeConfig(Tutorial1Basics.config.getFilterRules());
+            config.writeConfig(ChatFilter.config.getFilterRules());
         }
         blankInputFields();
     }

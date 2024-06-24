@@ -1,4 +1,4 @@
-package com.mcjty.tut1basics.client.data;
+package com.snowbird.chatfilter.client.data;
 
 
 import com.google.gson.Gson;

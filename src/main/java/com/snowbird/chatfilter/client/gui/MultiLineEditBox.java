@@ -1,4 +1,4 @@
-package com.mcjty.tut1basics.client.gui;
+package com.snowbird.chatfilter.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -7,7 +7,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderType;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;

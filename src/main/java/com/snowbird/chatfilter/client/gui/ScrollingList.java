@@ -1,4 +1,4 @@
-package com.mcjty.tut1basics.client.gui;
+package com.snowbird.chatfilter.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
