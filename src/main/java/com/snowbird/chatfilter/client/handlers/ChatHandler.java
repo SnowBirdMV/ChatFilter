@@ -289,6 +289,12 @@ public class ChatHandler {
                                 MutableComponent.create(new LiteralContents("G")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("7AC74C", 16)))),
                                 MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
                         )));
+                put("TwitchTV", new RankReplacement("TwitchTV",
+                        Arrays.asList(
+                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
+                                MutableComponent.create(new LiteralContents("T")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FF55FF", 16)))),
+                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
+                        )));
             }
         };
 
