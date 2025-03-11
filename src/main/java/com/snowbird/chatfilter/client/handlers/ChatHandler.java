@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.snowbird.chatfilter.ChatFilter;
 import com.snowbird.chatfilter.client.data.FilterRule;
 import com.mojang.logging.LogUtils;
+import com.snowbird.chatfilter.client.util.TagReplacer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.contents.LiteralContents;
@@ -76,10 +77,8 @@ public class ChatHandler {
         String originalMessage = e.getMessage().getString();
         Component newComponent = null;
         //Check for message type
-        if (originalMessage.startsWith("[G] ")) {
-            newComponent = handlePlayerMessage(e);
-        }
-        else if (handleIVoteMessage(e)) {
+		newComponent = handlePlayerMessage(e);
+		if (handleIVoteMessage(e)) {
             return;
         }
 
@@ -120,7 +119,7 @@ public class ChatHandler {
 
     private static boolean filterVotingMessages(ClientChatReceivedEvent e) {
         String message = e.getMessage().getString();
-        Pattern pattern = Pattern.compile("\\[I-Pixelmon\\] (.*) Just Voted! They recieved a Voting Key and \\$50 Poke Dollars! Type: \\/VOTE");
+        Pattern pattern = Pattern.compile("\\[I-Pixelmon\\] (.*) Just Voted! (.*)");
         Matcher matcher = pattern.matcher(message);
         //find the voters name if this is a vote
         if (matcher.find()) {
@@ -184,144 +183,9 @@ public class ChatHandler {
     }
 
     private static Component handlePlayerMessage(ClientChatReceivedEvent e){
-        //get the message minus the prefix
-        String message = e.getMessage().getString().substring(4);
-        Map<String, RankReplacement> rankToRankReplacement =  new HashMap<String, RankReplacement>(){
-            {
-                put("Rock", new RankReplacement("Rock",
-                        Arrays.asList(
-                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
-                                MutableComponent.create(new LiteralContents("R")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("B6A136", 16)))),
-                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
-                        )));
-                put("Trainer", new RankReplacement("Trainer",
-                        Arrays.asList(
-                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
-                                MutableComponent.create(new LiteralContents("T")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("1CFF1F", 16)))),
-                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
-                        )));
-                put("Water", new RankReplacement("Water",
-                        Arrays.asList(
-                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
-                                MutableComponent.create(new LiteralContents("W")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("415E9D", 16)))),
-                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
-                        )));
-                put("Admin", new RankReplacement("Admin",
-                        Arrays.asList(
-                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
-                                MutableComponent.create(new LiteralContents("A")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("E22C21", 16)))),
-                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
-                        )));
-                put("Beta", new RankReplacement("Beta",
-                        Arrays.asList(
-                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
-                                MutableComponent.create(new LiteralContents("B")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("DC8AD5", 16)))),
-                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
-                        )));
-                put("Architect", new RankReplacement("Architect",
-                        Arrays.asList(
-                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
-                                MutableComponent.create(new LiteralContents("A")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FB01A6", 16)))),
-                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
-                        )));
-                put("Electric", new RankReplacement("Electric",
-                        Arrays.asList(
-                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
-                                MutableComponent.create(new LiteralContents("E")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFA300", 16)))),
-                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
-                        )));
-                put("Mod", new RankReplacement("Mod",
-                        Arrays.asList(
-                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
-                                MutableComponent.create(new LiteralContents("M")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("0E66FB", 16)))),
-                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
-                        )));
-                put("Fire", new RankReplacement("Fire",
-                        Arrays.asList(
-                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
-                                MutableComponent.create(new LiteralContents("F")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("9C0000", 16)))),
-                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
-                        )));
-                put("Head-Admin", new RankReplacement("Head-Admin",
-                        Arrays.asList(
-                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
-                                MutableComponent.create(new LiteralContents("H")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("585757", 16)))),
-                                MutableComponent.create(new LiteralContents("A")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("585757", 16)))),
-                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
-                        )));
-                put("Owner", new RankReplacement("Owner",
-                        Arrays.asList(
-                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
-                                MutableComponent.create(new LiteralContents("O")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FB0800", 16)))),
-                                MutableComponent.create(new LiteralContents("W")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FB0800", 16)))),
-                                MutableComponent.create(new LiteralContents("N")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FB0800", 16)))),
-                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
-                        )));
-                put("Head-Staff", new RankReplacement("Head-Staff",
-                        Arrays.asList(
-                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
-                                MutableComponent.create(new LiteralContents("H")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FB0EF9", 16)))),
-                                MutableComponent.create(new LiteralContents("S")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FB0EF9", 16)))),
-                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
-                        )));
-                put("Head-Leader", new RankReplacement("Head-Leader",
-                        Arrays.asList(
-                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
-                                MutableComponent.create(new LiteralContents("H")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("927046", 16)))),
-                                MutableComponent.create(new LiteralContents("L")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("927046", 16)))),
-                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
-                        )));
-                put("Developer", new RankReplacement("Developer",
-                        Arrays.asList(
-                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
-                                MutableComponent.create(new LiteralContents("D")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("8D138C", 16)))),
-                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
-                        )));
-                put("Ice", new RankReplacement("Ice",
-                        Arrays.asList(
-                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
-                                MutableComponent.create(new LiteralContents("I")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("11D0DC", 16)))),
-                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
-                        )));
-                put("Grass", new RankReplacement("Grass",
-                        Arrays.asList(
-                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
-                                MutableComponent.create(new LiteralContents("G")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("7AC74C", 16)))),
-                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
-                        )));
-                put("TwitchTV", new RankReplacement("TwitchTV",
-                        Arrays.asList(
-                                MutableComponent.create(new LiteralContents("[")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16)))),
-                                MutableComponent.create(new LiteralContents("T")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FF55FF", 16)))),
-                                MutableComponent.create(new LiteralContents("]")).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(Integer.parseInt("FFFFFF", 16))))
-                        )));
-            }
-        };
-
-        MutableComponent newMessage = null;
-
-        Pattern pattern = Pattern.compile("\\[(.*?)\\]");
-        Matcher matcher = pattern.matcher(message);
-        List<Component> oldMessageComponents = e.getMessage().toFlatList();
-        List<Component> newMessageComponents = new ArrayList<>();
-        //match on the rank tag
-        if (matcher.find()) {
-            RankReplacement replacement = rankToRankReplacement.get(matcher.group(1));
-            newMessage = replacement.rankTag.get(0);
-            for(int i = 1; i < replacement.getRankTag().size(); i++) {
-                newMessage.append(replacement.getRankTag().get(i));
-            }
-            newMessage.append(MutableComponent.create(new LiteralContents(" ")));
-
-            for (Integer i = replacement.rankName.length() + 3; i < e.getMessage().toFlatList().toArray().length; i++) {
-                newMessageComponents.add(oldMessageComponents.get(i));
-            }
-            return addAllComponents(newMessage, e.getMessage(), replacement.rankName.length() + 3);
-        }
-        else{
-            //if no tag was found, just strip the [G] and return the initial message
-            return addAllComponents(MutableComponent.create(new LiteralContents("")), e.getMessage(), 0 );
-        }
+		Component originalMessage = e.getMessage();
+		Component processedMessage = TagReplacer.processComponent(originalMessage);
+		return processedMessage;
     }
 
     private static String escapeNonAscii(String str) {
